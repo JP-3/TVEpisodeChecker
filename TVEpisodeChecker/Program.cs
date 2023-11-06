@@ -1,5 +1,4 @@
 ﻿using FileMover;
-using Microsoft.VisualBasic;
 using TMDbLib.Client;
 
 Dictionary<string, string> data = new Dictionary<string, string>();
@@ -18,12 +17,9 @@ foreach (var row in File.ReadAllLines(@"C:\\Plex\TVShowsToSkip.txt"))
 var tvShows = Directory.GetDirectories(data[PropertiesEnum.TV.ToString()]);
 TMDbClient client = new TMDbClient(data[PropertiesEnum.apiKey.ToString()]);
 
-
-
 foreach (var tvShow in tvShows)
 {
     var fileName = Path.GetFileName(tvShow);
-    var v = !tvShowToSkip.Contains(fileName);
     if (!tvShowToSkip.Contains(fileName))
     {
         var tmdbShow = client.SearchTvShowAsync(fileName).Result;
@@ -49,7 +45,7 @@ foreach (var tvShow in tvShows)
             for (int i = 0; i < 50; i++)
             {
                 var season = client.GetTvSeasonAsync(id, i + 1).Result;
-                if (season == null)
+                if (season == null || season.AirDate == null || season.AirDate > DateTime.Now)
                 {
                     break;
                 }
