@@ -20,6 +20,12 @@ TMDbClient client = new TMDbClient(data[PropertiesEnum.apiKey.ToString()]);
 foreach (var tvShow in tvShows)
 {
     var fileName = Path.GetFileName(tvShow);
+
+    if (fileName.Contains("("))
+    {
+        fileName = fileName.Remove(fileName.IndexOf('(')).TrimEnd();
+    }
+
     if (!tvShowToSkip.Contains(fileName))
     {
         var tmdbShow = client.SearchTvShowAsync(fileName).Result;
@@ -42,31 +48,54 @@ foreach (var tvShow in tvShows)
             }
 
             var seasons = Directory.GetDirectories(tvShow);
-            for (int i = 0; i < 50; i++)
+            if (seasons.Count() != 0)
             {
-                var season = client.GetTvSeasonAsync(id, i + 1).Result;
-                if (season == null || season.AirDate == null || season.AirDate > DateTime.Now)
+                for (int i = 0; i < 50; i++)
                 {
-                    break;
-                }
-
-                try
-                {
-                    if (seasons[i].ToLower().Contains("season"))
+                    var season = client.GetTvSeasonAsync(id, i + 1).Result;
+                    if (season == null || season.AirDate == null || season.AirDate.Value.Date >= DateTime.Now.Date)
                     {
-                        var episodes = Directory.GetFiles(seasons[i]).Count();
-                        if (season.Episodes.Count > episodes)
+                        break;
+                    }
+
+                    try
+                    {
+                        if (seasons[i].ToLower().Contains("season"))
                         {
-                            Console.WriteLine($"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}");
-                            File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}\r\n");
+                            var episodes = Directory.GetFiles(seasons[i]).Count();
+
+                            int episodeCount = 0;
+                            for (int episode = 0; episode < season.Episodes.Count; episode++)
+                            {
+                                try
+                                {
+                                    if (season.Episodes[episode].AirDate.Value.Date <= DateTime.Now.Date)
+                                    {
+                                        episodeCount++;
+                                    }
+                                }
+                                catch (Exception)
+                                {
+                                    if (episodeCount > episodes)
+                                    {
+                                        Console.WriteLine($"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes count {season.Episodes.Count}, Air count {episodeCount}");
+                                        File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}, Air count {episodeCount}\r\n");
+                                    }
+                                    break;
+                                }
+                            }
+                            if (episodeCount > episodes)
+                            {
+                                Console.WriteLine($"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes count {season.Episodes.Count}, Air count {episodeCount}");
+                                File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}, Air count {episodeCount}\r\n");
+                            }
                         }
                     }
-                }
-                catch
-                {
-                    Console.WriteLine($"{fileName} - Season {i + 1} Episodes 0, TMDB Episodes {season.Episodes.Count}");
-                    File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} - Season {i + 1} Episodes 0, TMDB Episodes {season.Episodes.Count}\r\n");
-
+                    catch
+                    {
+                        Console.WriteLine($"{fileName} - Season {i + 1} Episodes 0, TMDB Episodes {season.Episodes.Count}");
+                        File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} - Season {i + 1} Episodes 0, TMDB Episodes {season.Episodes.Count}\r\n");
+                    }
                 }
             }
         }
