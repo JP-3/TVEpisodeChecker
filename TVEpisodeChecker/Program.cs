@@ -87,7 +87,7 @@ foreach (var tvShow in tvShows)
                                     {
                                         Console.WriteLine($"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes count {season.Episodes.Count}, Air count {episodeCount}");
                                         File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}, Air count {episodeCount}\r\n");
-                                        stringBuilder.AppendLine($"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}, Air count {episodeCount}\r\n");
+                                        stringBuilder.AppendLine($"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}, Air count {episodeCount}");
                                     }
                                     break;
                                 }
@@ -96,7 +96,7 @@ foreach (var tvShow in tvShows)
                             {
                                 Console.WriteLine($"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes count {season.Episodes.Count}, Air count {episodeCount}");
                                 File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}, Air count {episodeCount}\r\n");
-                                stringBuilder.AppendLine($"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}, Air count {episodeCount}\r\n");
+                                stringBuilder.AppendLine($"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}, Air count {episodeCount}");
                             }
                         }
                     }
