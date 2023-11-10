@@ -11,11 +11,11 @@ namespace TVEpisodeChecker
 {
     internal class Email
     {
-        public void SendEmail(string gName, string gKey, string body)
+        public void SendEmail(string gName, string gKey, string subject, string body)
         {
             // Create a MailMessage object
             MailMessage mailMessage = new MailMessage(gName, gName);
-            mailMessage.Subject = "TV Check";
+            mailMessage.Subject = subject;
             mailMessage.Body = body;
 
             // Create a SmtpClient object
