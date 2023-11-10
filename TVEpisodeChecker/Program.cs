@@ -1,5 +1,8 @@
 ﻿using FileMover;
+using System.Reflection;
+using System.Text;
 using TMDbLib.Client;
+using TVEpisodeChecker;
 
 Dictionary<string, string> data = new Dictionary<string, string>();
 
@@ -16,6 +19,7 @@ foreach (var row in File.ReadAllLines(@"C:\\Plex\TVShowsToSkip.txt"))
 
 var tvShows = Directory.GetDirectories(data[PropertiesEnum.TV.ToString()]);
 TMDbClient client = new TMDbClient(data[PropertiesEnum.apiKey.ToString()]);
+StringBuilder stringBuilder = new StringBuilder();
 
 foreach (var tvShow in tvShows)
 {
@@ -33,6 +37,7 @@ foreach (var tvShow in tvShows)
         {
             Console.WriteLine($"{fileName} Nothing returned from TMDB");
             File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} Nothing returned from TMDB\r\n");
+            stringBuilder.AppendLine($"{fileName} Nothing returned from TMDB");
         }
         else
         {
@@ -43,6 +48,8 @@ foreach (var tvShow in tvShows)
                 {
                     Console.WriteLine($"{fileName} missing seasons folder");
                     File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} missing seasons folder\r\n");
+                    stringBuilder.AppendLine($"{fileName} missing seasons folder");
+
                     break;
                 }
             }
@@ -80,6 +87,7 @@ foreach (var tvShow in tvShows)
                                     {
                                         Console.WriteLine($"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes count {season.Episodes.Count}, Air count {episodeCount}");
                                         File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}, Air count {episodeCount}\r\n");
+                                        stringBuilder.AppendLine($"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}, Air count {episodeCount}\r\n");
                                     }
                                     break;
                                 }
@@ -88,6 +96,7 @@ foreach (var tvShow in tvShows)
                             {
                                 Console.WriteLine($"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes count {season.Episodes.Count}, Air count {episodeCount}");
                                 File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}, Air count {episodeCount}\r\n");
+                                stringBuilder.AppendLine($"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}, Air count {episodeCount}\r\n");
                             }
                         }
                     }
@@ -95,6 +104,8 @@ foreach (var tvShow in tvShows)
                     {
                         Console.WriteLine($"{fileName} - Season {i + 1} Episodes 0, TMDB Episodes {season.Episodes.Count}");
                         File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} - Season {i + 1} Episodes 0, TMDB Episodes {season.Episodes.Count}\r\n");
+                        stringBuilder.AppendLine($"{fileName} - Season {i + 1} Episodes 0, TMDB Episodes {season.Episodes.Count}");
+
                     }
                 }
             }
@@ -104,4 +115,6 @@ foreach (var tvShow in tvShows)
     {
         Console.WriteLine($"Skipped File - {fileName}");
     }
+    Email email = new Email();
+    email.SendEmail(data[PropertiesEnum.gName.ToString()], data[PropertiesEnum.gKey.ToString()], stringBuilder.ToString());
 }

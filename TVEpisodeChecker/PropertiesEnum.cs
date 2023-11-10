@@ -10,6 +10,8 @@
         TV,
         TV4K,
         LogFile,
-        EpisodeCheckerLog
+        EpisodeCheckerLog,
+        gName,
+        gKey
     }
 }
