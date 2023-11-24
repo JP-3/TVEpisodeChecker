@@ -1,10 +1,9 @@
 ﻿using FileMover;
 using System.Text;
 using TMDbLib.Client;
-using TVEpisodeChecker;
 
+Email.Email email = new Email.Email();
 
-Email email = new Email();
 Dictionary<string, string> data = new Dictionary<string, string>();
 
 foreach (var row in File.ReadAllLines(@"C:\\Plex\key.txt"))
@@ -125,5 +124,5 @@ foreach (var tvShow in tvShows)
     }
 }
 
-email.SendEmail(data[PropertiesEnum.gName.ToString()], data[PropertiesEnum.gKey.ToString()], "TV Check", stringBuilder.ToString());
+email.SendEmail("TV Check", "");//stringBuilder.ToString());
 
