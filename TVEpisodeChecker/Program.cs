@@ -7,13 +7,13 @@ Email email = new Email();
 
 Dictionary<string, string> data = new Dictionary<string, string>();
 
-foreach (var row in File.ReadAllLines(@"C:\\Plex\key.txt"))
+foreach (var row in File.ReadAllLines(@"C:\\git\key.txt"))
 {
     data.Add(row.Split('=')[0], string.Join("=", row.Split('=').Skip(1).ToArray()));
 }
 
 List<string> tvShowToSkip = new List<string>();
-foreach (var row in File.ReadAllLines(@"C:\\Plex\TVShowsToSkip.txt"))
+foreach (var row in File.ReadAllLines(data[PropertiesEnum.TVShowsToSkip.ToString()]))
 {
     tvShowToSkip.Add(row);
 }

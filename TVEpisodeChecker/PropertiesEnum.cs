@@ -12,6 +12,7 @@
         LogFile,
         EpisodeCheckerLog,
         gName,
-        gKey
+        gKey,
+        TVShowsToSkip
     }
 }
