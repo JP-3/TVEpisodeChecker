@@ -1,8 +1,9 @@
 ﻿using FileMover;
+using MyEmails;
 using System.Text;
 using TMDbLib.Client;
 
-Email.Email email = new Email.Email();
+Email email = new Email();
 
 Dictionary<string, string> data = new Dictionary<string, string>();
 
@@ -124,5 +125,5 @@ foreach (var tvShow in tvShows)
     }
 }
 
-email.SendEmail("TV Check", "");//stringBuilder.ToString());
+email.SendEmail("TV Check", stringBuilder.ToString());
 
