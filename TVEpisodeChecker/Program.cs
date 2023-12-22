@@ -131,7 +131,15 @@ try
                 }
             }
         }
-        email.SendEmail("TV Check", stringBuilder.ToString());
+        if (data[PropertiesEnum.TV4K.ToString()].ToString().ToLower().Contains("4k"))
+        {
+            email.SendEmail("TV Check 4K", stringBuilder.ToString());
+
+        }
+        else
+        {
+            email.SendEmail("TV Check", stringBuilder.ToString());
+        }
     }
 }
 catch (Exception ex)
