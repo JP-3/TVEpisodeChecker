@@ -28,7 +28,7 @@ try
         TMDbClient client = new TMDbClient(data[PropertiesEnum.apiKey.ToString()]);
         using (client)
         {
-            foreach (var tvShow in tvShows)
+            Parallel.ForEach(tvShows, tvShow =>
             {
                 var fileName = Path.GetFileName(tvShow);
 
@@ -43,7 +43,6 @@ try
                     if (tmdbShow.TotalResults == 0 || fileName == ".grab")
                     {
                         Console.WriteLine($"{fileName} Nothing returned from TMDB");
-                        File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} Nothing returned from TMDB\r\n");
                         stringBuilder.AppendLine($"{fileName} Nothing returned from TMDB");
                     }
                     else
@@ -54,7 +53,6 @@ try
                             if (!file.ToLower().Contains("season"))
                             {
                                 Console.WriteLine($"{fileName} missing seasons folder");
-                                File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} missing seasons folder\r\n");
                                 stringBuilder.AppendLine($"{fileName} missing seasons folder");
                                 break;
                             }
@@ -92,7 +90,6 @@ try
                                                 if (episodeCount > episodes)
                                                 {
                                                     Console.WriteLine($"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes count {season.Episodes.Count}, Air count {episodeCount}");
-                                                    File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}, Air count {episodeCount}\r\n");
                                                     stringBuilder.AppendLine($"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}, Air count {episodeCount}");
                                                 }
                                                 break;
@@ -101,7 +98,6 @@ try
                                         if (episodeCount > episodes)
                                         {
                                             Console.WriteLine($"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes count {season.Episodes.Count}, Air count {episodeCount}");
-                                            File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}, Air count {episodeCount}\r\n");
                                             stringBuilder.AppendLine($"{fileName} - {Path.GetFileName(seasons[i])} Episodes {episodes}, TMDB Episodes {season.Episodes.Count}, Air count {episodeCount}");
                                         }
                                     }
@@ -111,13 +107,11 @@ try
                                     if (episodeCount == -1)
                                     {
                                         Console.WriteLine($"{fileName} - Season {i + 1} Missing Season Folder");
-                                        File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} - Season {i + 1} Missing Season Folder");
                                         stringBuilder.AppendLine($"{fileName} - Season {i + 1} Missing Season Folder");
                                     }
                                     else
                                     {
                                         Console.WriteLine($"{fileName} - Season {i + 1} Episodes 0, TMDB Episodes {season.Episodes.Count}, Air Count {episodeCount}");
-                                        File.AppendAllText(data[PropertiesEnum.EpisodeCheckerLog.ToString()], $"{fileName} - Season {i + 1} Episodes 0, TMDB Episodes {season.Episodes.Count}, Air Count {episodeCount}");
                                         stringBuilder.AppendLine($"{fileName} - Season {i + 1} Episodes 0, TMDB Episodes {season.Episodes.Count}, Air Count {episodeCount}");
                                     }
                                 }
@@ -129,7 +123,7 @@ try
                 {
                     Console.WriteLine($"Skipped File - {fileName}");
                 }
-            }
+            });
         }
         if (location.ToLower().Contains("4k"))
         {
