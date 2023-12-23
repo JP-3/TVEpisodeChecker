@@ -28,7 +28,9 @@ try
         TMDbClient client = new TMDbClient(data[PropertiesEnum.apiKey.ToString()]);
         using (client)
         {
-            Parallel.ForEach(tvShows, tvShow =>
+            //Parallel.ForEach(tvShows, tvShow =>
+            //{
+            foreach (var tvShow in tvShows)
             {
                 var fileName = Path.GetFileName(tvShow);
 
@@ -123,7 +125,7 @@ try
                 {
                     Console.WriteLine($"Skipped File - {fileName}");
                 }
-            });
+            }// });
         }
         if (location.ToLower().Contains("4k"))
         {
